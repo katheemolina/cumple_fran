@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Game de Cisco Tini</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #ffebcd;
+        }
+        h1 {
+            font-size: 24px;
+        }
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .card {
+            width: 90px;
+            height: 120px;
+            background-color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        .card img {
+            width: 80px;
+            height: 110px;
+            display: none;
+            border-radius: 10px;
+        }
+        .matched {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        #mensaje-final {
+            display: none;
+            font-size: 20px;
+            margin-top: 20px;
+            color: #ff6600;
+        }
+        #btn-siguiente {
+            display: none;
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            background-color: #2ecc71;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+            
+        }
+        #btn-siguiente:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+
+    <h1> Encuentra las Parejas de Cisco Tini</h1>
+    <div id="game-board"></div>
+    <p id="mensaje-final">Muy biennnn!! Ganasteeee</p>
+    <button id="btn-siguiente" onclick="window.location.href='regalo.html'">Abrir el regalo!</button>
+
+    <script>
+        const perritos = [
+            "img/1.jpg",
+            "img/3.jpg",
+            "img/4.jpg",
+            "img/12.jpg",
+            "img/13.jpg",
+            "img/14.jpg",
+            "img/15.jpg",
+            "img/17.jpg"
+        ];
+
+        let cards = [...perritos, ...perritos]; // Duplicamos para formar parejas
+        let shuffledCards = cards.sort(() => Math.random() - 0.5);
+
+        const gameBoard = document.getElementById("game-board");
+        let flippedCards = [];
+        let matchedPairs = 0;
+
+        function createCard(src) {
+            let card = document.createElement("div");
+            card.classList.add("card");
+
+            let img = document.createElement("img");
+            img.src = src;
+            card.appendChild(img);
+
+            card.addEventListener("click", () => {
+                if (flippedCards.length < 2 && !card.classList.contains("matched")) {
+                    img.style.display = "block";
+                    flippedCards.push({ card, img });
+
+                    if (flippedCards.length === 2) {
+                        setTimeout(checkMatch, 500);
+                    }
+                }
+            });
+
+            return card;
+        }
+
+        function checkMatch() {
+            if (flippedCards[0].img.src === flippedCards[1].img.src) {
+                flippedCards[0].card.classList.add("matched");
+                flippedCards[1].card.classList.add("matched");
+                matchedPairs++;
+
+                if (matchedPairs === perritos.length) {
+                    document.getElementById("mensaje-final").style.display = "block";
+                    document.getElementById("btn-siguiente").style.display = "block"; // Muestra el botón al ganar
+                }
+            } else {
+                flippedCards[0].img.style.display = "none";
+                flippedCards[1].img.style.display = "none";
+            }
+            flippedCards = [];
+        }
+
+        shuffledCards.forEach(src => {
+            gameBoard.appendChild(createCard(src));
+        });
+    </script>
+
+</body>
+</html>
